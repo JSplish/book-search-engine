@@ -31,18 +31,22 @@ const SignupForm = () => {
       event.preventDefault();
       event.stopPropagation();
     }
-    console.log(userFormData)
+    // console.log(userFormData)
     try {
       const response = await createUser({
         variables:{...userFormData}
       });
 
-      console.log(response);
-      if (!response.data.addUser.token) {
-        throw new Error('something went wrong!');
-      }
+      // console.log(response);
+      // if (!response.data.addUser.token) {
+      //   throw new Error('something went wrong!');
+      // }
 
-      const { token, user } = await response.data.addUser;
+      // if (!response.ok) {
+      //   throw new Error("something went wrong!")
+      // }
+
+      const { token } = await response.data.addUser;
 
       Auth.login(token);
     } catch (err) {

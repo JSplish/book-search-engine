@@ -6,7 +6,9 @@ const resolvers = {
     Query: {
       me: async (parent, args, context) => {
         if (context.user) {
-          const userData = await User.findOne({ _id: context.user._id })
+          const userData = await User.findOne({
+            $or: [{ _id: context.user._id}, { username: context.user.username }],
+        })
             .select('-__v -password')
             .populate('books')
   
@@ -20,7 +22,7 @@ const resolvers = {
         addUser: async (parent, args) => {
           const user = await User.create(args);
           const token = signToken(user);
-          console.log(token, user)
+          
           return { token, user };
         },
         login: async (parent, { email, password }) => {
@@ -41,11 +43,12 @@ const resolvers = {
         },
 
         saveBook: async (parent, args, context) => {
+          
             if (context.user) {
           
              const updateBook =  await User.findByIdAndUpdate(
                 { _id: context.user._id },
-                { $addToSet: { savedBooks: args.input } },
+                { $push: { savedBooks: args.input } },
                 { new: true }
               );
           
